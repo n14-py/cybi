@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybi | Nuestro Equipo e Impacto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .about-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .story-section {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+
+        .story-text {
+            flex: 1;
+        }
+
+        .story-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+        }
+
+        .story-text p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .story-icon {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            font-size: 12rem;
+            color: var(--light-blue);
+            text-shadow: 0 10px 30px rgba(24, 119, 242, 0.2);
+        }
+
+        /* Grid adaptado para mostrar las declaraciones profesionales de forma estética */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 35px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content:间-between;
+        }
+
+        .team-avatar {
+            width: 70px;
+            height: 70px;
+            background: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            border: 2px solid var(--cyan-accent);
+        }
+
+        .team-member h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--dark-blue);
+        }
+
+        .team-member .role {
+            font-size: 0.85rem;
+            color: var(--primary-blue);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .team-quote {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-dark);
+            font-style: italic;
+            position: relative;
+            padding: 10px 0;
+            border-top: 1px solid rgba(24, 119, 242, 0.1);
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .story-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            .story-icon {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo-container">
+                    <img src="img/cybi-logo.jpeg" alt="Logo Cybi" style="border-radius: 50%;">
+                    <span class="logo-text">Cybi</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="chatbot.html">El Bot</a></li>
+                    <li><a href="estadisticas.html">Estadísticas</a></li>
+                    <li><a href="nosotros.html" style="color: var(--primary-blue);">Quiénes Somos</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 120px; min-height: 70vh;">
+        
+        <div class="about-header">
+            <div class="dev-badge">
+                <i class="fa-solid fa-users"></i> Compromiso e Investigación
+            </div>
+            <h1 style="font-size: 3rem; margin-top: 10px;">Voces del <span style="color: var(--primary-blue);">Equipo Cybi</span></h1>
+        </div>
+
+        <div class="story-section">
+            <div class="story-text">
+                <h2>¿Cómo surgió la idea?</h2>
+                <p>
+                    En Paraguay, la educación cibernética enfrenta grandes brechas institucionales. Existe una falta crítica de información accesible sobre riesgos digitales como el ciberbullying, sexting y phishing, dejando a los adolescentes en una posición de alta vulnerabilidad.
+                </p>
+                <p>
+                    Ante este escenario, determinamos que no basta con la teoría; se requiere una herramienta interactiva de apoyo educativo. Así nace la visión de <strong>Cybi</strong>, estructurado bajo los lineamientos de la Ley de Protección de Datos Personales 7593/2025.
+                </p>
+                <p>
+                    Nuestra metodología no se basa en suposiciones: <strong>recorreremos colegios y ciudades de Paraguay</strong> para levantar estadísticas propias y entender de primera mano la realidad escolar, garantizando que el entrenamiento de la Inteligencia Artificial responda a problemas reales de nuestra sociedad.
+                </p>
+            </div>
+            <div class="story-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; margin-bottom: 40px; font-size: 2rem;">Visiones del Proyecto</h2>
+        <div class="team-grid">
+            
+            <div class="glass-card team-member">
+                <div>
+                    <div class="team-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3>Luis Fernando Arce Fretes</h3>
+                    <div class="role">Lead Developer & System Architect</div>
+                </div>
+                <p class="team-quote">
+                    "Tras años desarrollando plataformas, reconozco que la clave del éxito es la sostenibilidad técnica. En Cybi, estamos construyendo una infraestructura escalable que permite evolucionar las capacidades del bot conforme los datos reales de los colegios así lo exijan, asegurando que nuestra respuesta sea siempre precisa, actual y técnica."
+                </p>
+            </div>
+
+            <div class="glass-card team-member">
+                <div>
+                    <div class="team-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3>Marcos Fleitas</h3>
+                    <div class="role">.</div>
+                </div>
+                <p class="team-quote">
+                    "."
+                </p>
+            </div>
+
+            <div class="glass-card team-member">
+                <div>
+                    <div class="team-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3>Fabian Benitez</h3>
+                    <div class="role">..</div>
+                </div>
+                <p class="team-quote">
+                    "."
+                </p>
+            </div>
+
+            <div class="glass-card team-member">
+                <div>
+                    <div class="team-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3>Jackeline Benitez</h3>
+                    <div class="role">.</div>
+                </div>
+                <p class="team-quote">
+                    ".."
+                </p>
+            </div>
+
+            <div class="glass-card team-member">
+                <div>
+                    <div class="team-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3>Lucia Sosa</h3>
+                    <div class="role">.</div>
+                </div>
+                <p class="team-quote">
+                    "..."
+                </p>
+            </div>
+
+            <div class="glass-card team-member">
+                <div>
+                    <div class="team-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3>Hilary Muñoz</h3>
+                    <div class="role">.</div>
+                </div>
+                <p class="team-quote">
+                    ".."
+                </p>
+            </div>
+
+            <div class="glass-card team-member">
+                <div>
+                    <div class="team-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3>Natalia Gomez</h3>
+                    <div class="role">..</div>
+                </div>
+                <p class="team-quote">
+                    "-."
+                </p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Proyecto Cybi. Desarrollado por estudiantes universitarios para Paraguay.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

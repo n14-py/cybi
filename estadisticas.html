@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybi | Recolección de Datos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        .stats-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+            overflow: hidden;
+            border: 2px dashed rgba(24, 119, 242, 0.3); /* Borde punteado para indicar que está en espera */
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 60px auto;
+            padding: 30px;
+        }
+
+        .data-alert {
+            background: rgba(255, 213, 79, 0.2);
+            color: #B8860B;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 213, 79, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo-container">
+                    <img src="img/cybi-logo.jpeg" alt="Logo Cybi" style="border-radius: 50%;">
+                    <span class="logo-text">Cybi</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="chatbot.html">El Bot</a></li>
+                    <li><a href="estadisticas.html" style="color: var(--primary-blue);">Estadísticas</a></li>
+                    <li><a href="nosotros.html">Quiénes Somos</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 120px; min-height: 70vh;">
+        
+        <div class="stats-header">
+            <div class="dev-badge">
+                <i class="fa-solid fa-clipboard-list"></i> Fase de Investigación de Campo
+            </div>
+            <h1 style="font-size: 3rem; margin-top: 10px;">Métricas y <span style="color: var(--primary-blue);">Recolección de Datos</span></h1>
+            <p style="max-width: 700px; margin: 20px auto 0; font-size: 1.1rem;">
+                Nuestro equipo se prepara para visitar diferentes colegios y ciudades. Aquí reflejaremos los datos reales y actualizados directamente de los estudiantes encuestados.
+            </p>
+        </div>
+
+        <div class="data-alert">
+            <i class="fa-solid fa-hourglass-half"></i> Los contadores se actualizarán a medida que se realicen las visitas a las instituciones educativas.
+        </div>
+
+        <div class="stats-grid">
+            <div class="glass-card stat-card">
+                <i class="fa-solid fa-school"></i>
+                <div class="stat-number">0</div>
+                <h3 style="font-size: 1.1rem; color: var(--text-dark);">Colegios Visitados</h3>
+            </div>
+
+            <div class="glass-card stat-card">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <div class="stat-number">0</div>
+                <h3 style="font-size: 1.1rem; color: var(--text-dark);">Ciudades Alcanzadas</h3>
+            </div>
+
+            <div class="glass-card stat-card">
+                <i class="fa-solid fa-users-viewfinder"></i>
+                <div class="stat-number">0</div>
+                <h3 style="font-size: 1.1rem; color: var(--text-dark);">Alumnos Encuestados</h3>
+            </div>
+
+            <div class="glass-card stat-card">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <div class="stat-number">0</div>
+                <h3 style="font-size: 1.1rem; color: var(--text-dark);">Casos Reportados</h3>
+            </div>
+        </div>
+
+        <div class="glass-card chart-container">
+            <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.8rem;">Incidencia de Riesgos (Próximamente)</h2>
+            <canvas id="riesgosChart"></canvas>
+            <p style="text-align: center; font-size: 0.85rem; color: var(--text-light); margin-top: 20px; font-style: italic;">
+                *El gráfico tomará forma una vez procesadas las primeras encuestas.
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Proyecto Cybi. Desarrollado por estudiantes universitarios para Paraguay.</p>
+        </div>
+    </footer>
+
+    <script>
+        const ctx = document.getElementById('riesgosChart').getContext('2d');
+        
+        const colorBlue = '#1877F2';
+        const colorCyan = '#00E5FF';
+        const colorGold = '#FFD54F';
+        const colorDark = '#0B2046';
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Ciberbullying', 'Sexting', 'Phishing', 'Hackeo de Cuentas', 'Sextorsión'],
+                datasets: [{
+                    label: 'Casos Detectados',
+                    // Todos los datos empiezan en cero
+                    data: [0, 0, 0, 0, 0],
+                    backgroundColor: [
+                        colorBlue,
+                        colorCyan,
+                        colorGold,
+                        colorDark,
+                        '#64748B'
+                    ],
+                    borderRadius: 8,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(11, 32, 70, 0.9)',
+                        titleFont: { family: 'Nunito', size: 14 },
+                        bodyFont: { family: 'Nunito', size: 14 },
+                        padding: 15,
+                        cornerRadius: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100, // Lo dejamos en 100 como base, se ajustará solo cuando metan datos
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            font: { family: 'Nunito' }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: { family: 'Nunito', weight: 'bold' }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
