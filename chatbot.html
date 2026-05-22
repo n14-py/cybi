@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cybi | Motor de IA y Recolección</title>
+    <title>Cybi | Entorno de Pruebas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     
@@ -13,7 +13,7 @@
             margin: 20px auto 40px auto;
             display: flex;
             flex-direction: column;
-            height: 75vh; /* Altura adaptable */
+            height: 75vh;
             min-height: 500px;
         }
         
@@ -24,7 +24,7 @@
             padding-bottom: 20px;
             border-bottom: var(--glass-border);
             margin-bottom: 20px;
-            flex-wrap: wrap; /* Para que baje en celulares si es necesario */
+            flex-wrap: wrap;
             gap: 15px;
         }
 
@@ -52,19 +52,26 @@
             border: 1px solid rgba(11, 32, 70, 0.1);
         }
 
+        /* Cambiado a Amarillo/Naranja para indicar "En Desarrollo" */
         .status-dot {
             height: 10px;
             width: 10px;
-            background-color: #00E5FF; /* Cian de "Activo/Recolectando" */
+            background-color: #FFB300; 
             border-radius: 50%;
             display: inline-block;
-            box-shadow: 0 0 10px #00E5FF;
-            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px #FFB300;
+            animation: pulse-dev 2s infinite;
             margin-right: 5px;
         }
 
+        @keyframes pulse-dev {
+            0% { box-shadow: 0 0 0 0 rgba(255, 179, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 179, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 179, 0, 0); }
+        }
+
         .chat-window {
-            flex: 1; /* Ocupa el espacio restante */
+            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -73,7 +80,6 @@
             padding-right: 10px;
         }
 
-        /* Scrollbar personalizado para el chat */
         .chat-window::-webkit-scrollbar { width: 6px; }
         .chat-window::-webkit-scrollbar-thumb { background: rgba(24, 119, 242, 0.3); border-radius: 10px; }
 
@@ -107,21 +113,16 @@
 
         .suggestion-chip {
             background: var(--white);
-            border: 1px solid var(--primary-blue);
-            color: var(--primary-blue);
+            border: 1px dashed var(--text-light);
+            color: var(--text-light);
             padding: 8px 14px;
             border-radius: 50px;
             font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            cursor: not-allowed;
             display: flex;
             align-items: center;
             gap: 5px;
-        }
-
-        .suggestion-chip:hover {
-            background: var(--light-blue);
-            transform: translateY(-2px);
+            opacity: 0.8;
         }
 
         .chat-input-preview {
@@ -152,20 +153,17 @@
             height: 45px;
             border-radius: 50%;
             border: none;
-            background: var(--primary-blue);
+            background: var(--text-light);
             color: white;
-            cursor: pointer;
+            cursor: not-allowed;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
-            transition: transform 0.2s;
             flex-shrink: 0;
         }
 
-        .chat-input-preview button:hover { transform: scale(1.05); }
-
-        /* Ajustes extra para móviles en el chat */
+        /* Ajustes extra para móviles */
         @media (max-width: 576px) {
             .chat-preview-container { padding: 20px 15px; margin-top: 0; height: 80vh; border-radius: 15px; }
             .system-message { font-size: 0.9rem; padding: 12px; }
@@ -207,36 +205,39 @@
                 <div class="chat-profile">
                     <img src="img/cybi-logo.jpeg" alt="Cybi Avatar">
                     <div>
-                        <h2 style="font-size: 1.4rem; margin-bottom: 2px;">Cybi Data Collector</h2>
-                        <p style="font-size: 0.85rem; margin: 0; color: var(--text-light);">Módulo de Investigación de Campo</p>
+                        <h2 style="font-size: 1.4rem; margin-bottom: 2px;">Cybi Bot</h2>
+                        <p style="font-size: 0.85rem; margin: 0; color: var(--text-light);">Módulo de Recolección (En Construcción)</p>
                     </div>
                 </div>
                 
                 <div class="system-status">
-                    <div><span class="status-dot"></span> <strong>Estado:</strong> Activo / Recolectando</div>
-                    <div style="margin-top: 3px;"><i class="fa-solid fa-satellite-dish" style="color: var(--primary-blue);"></i> <strong>Misión:</strong> Levantamiento de datos en colegios</div>
+                    <div><span class="status-dot"></span> <strong>Estado:</strong> En Desarrollo (Inactivo)</div>
+                    <div style="margin-top: 3px;"><i class="fa-solid fa-code" style="color: var(--primary-blue);"></i> <strong>Progreso:</strong> Programando flujos de datos</div>
                 </div>
             </div>
 
             <div class="chat-window" id="chat-window">
                 <div class="system-message">
-                    <strong><i class="fa-solid fa-microchip"></i> Sistema de Encuestas Iniciado</strong><br><br>
-                    Hola, soy <strong>Cybi</strong>. 🤖<br><br>
-                    Actualmente, mi función principal es interactuar con los estudiantes de diferentes colegios de Paraguay. <strong>Yo soy quien recoge las estadísticas reales.</strong> <br><br>
-                    <em>Estoy en desarrollo por el equipo</em>
+                    <strong><i class="fa-solid fa-person-digging"></i> Interfaz en Fase de Desarrollo</strong><br><br>
+                    ¡Hola! Soy <strong>Cybi</strong>. 🤖<br><br>
+                    Actualmente mi equipo de desarrollo me está programando. Aún <strong>no estoy activo</strong>, pero cuando esté listo, mi trabajo será ser yo quien te haga las preguntas.<br><br>
+                    Cuando me activen en tu ciudad, lo primero que haré será interactuar contigo para armar nuestras estadísticas. Te preguntaré cosas como:<br><br>
+                    <em>• "¿De qué colegio sos?"</em><br>
+                    <em>• "¿De qué ciudad nos escribís?"</em><br>
+                    <em>• "¿Alguna vez sufriste o presenciaste un caso de ciberbullying?"</em><br><br>
+                    Con tu ayuda y tus respuestas, voy a aprender y a generar los datos reales para proteger a los adolescentes de Paraguay.
                     
                     <div class="suggestions-container">
-                        <button class="suggestion-chip" onclick="simulateClick()"><i class="fa-solid fa-ghost"></i> Alguien creó un perfil falso mío</button>
-                        <button class="suggestion-chip" onclick="simulateClick()"><i class="fa-solid fa-camera"></i> Me amenazan con unas fotos</button>
-                        <button class="suggestion-chip" onclick="simulateClick()"><i class="fa-solid fa-user-shield"></i> ¿Cómo bloqueo cuentas?</button>
+                        <div class="suggestion-chip"><i class="fa-solid fa-school"></i> Ej: Soy del Colegio Nacional...</div>
+                        <div class="suggestion-chip"><i class="fa-solid fa-comment-dots"></i> Ej: Responder encuesta</div>
                     </div>
                 </div>
             </div>
 
             <div class="chat-input-preview">
-                <input type="text" id="chat-input" placeholder="Cybi está registrando datos de campo..." readonly>
-                <button title="Envío bloqueado durante recolección" onclick="simulateClick()">
-                    <i class="fa-solid fa-paper-plane"></i>
+                <input type="text" id="chat-input" placeholder="El chat estará disponible cuando Cybi finalice su desarrollo..." disabled>
+                <button title="Envío bloqueado temporalmente" disabled>
+                    <i class="fa-solid fa-lock"></i>
                 </button>
             </div>
 
@@ -261,15 +262,6 @@
                 icon.classList.add('fa-bars');
             }
         });
-
-        // Simulación visual al tocar un botón del chat
-        function simulateClick() {
-            const input = document.getElementById('chat-input');
-            input.placeholder = "Procesando matriz de datos...";
-            setTimeout(() => {
-                input.placeholder = "Cybi está registrando datos de campo...";
-            }, 1500);
-        }
     </script>
 </body>
 </html>
