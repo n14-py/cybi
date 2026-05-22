@@ -26,7 +26,7 @@
             padding: 30px 20px;
             position: relative;
             overflow: hidden;
-            border: 2px dashed rgba(24, 119, 242, 0.3); /* Borde punteado para indicar que está en espera */
+            border: 2px dashed rgba(24, 119, 242, 0.3);
         }
 
         .stat-card i {
@@ -47,7 +47,14 @@
             width: 100%;
             max-width: 800px;
             margin: 0 auto 60px auto;
-            padding: 30px;
+            padding: 30px 20px;
+        }
+        
+        /* Contenedor estricto para evitar el bug de Chart.js */
+        .canvas-wrapper {
+            position: relative;
+            height: 350px; /* Altura fija para evitar el scroll infinito */
+            width: 100%;
         }
 
         .data-alert {
@@ -59,6 +66,15 @@
             font-weight: bold;
             margin-bottom: 30px;
             border: 1px solid rgba(255, 213, 79, 0.5);
+            font-size: 0.95rem;
+        }
+
+        /* Ajustes extra para móviles */
+        @media (max-width: 576px) {
+            .stats-header h1 { font-size: 2.2rem; }
+            .stat-number { font-size: 2.8rem; }
+            .chart-container { padding: 20px 10px; }
+            .canvas-wrapper { height: 300px; } /* Un poco más pequeño en celulares */
         }
     </style>
 </head>
@@ -71,7 +87,12 @@
                     <img src="img/cybi-logo.jpeg" alt="Logo Cybi" style="border-radius: 50%;">
                     <span class="logo-text">Cybi</span>
                 </a>
-                <ul class="nav-links">
+                
+                <button class="menu-toggle" id="mobile-menu-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <ul class="nav-links" id="nav-links">
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="chatbot.html">El Bot</a></li>
                     <li><a href="estadisticas.html" style="color: var(--primary-blue);">Estadísticas</a></li>
@@ -81,20 +102,20 @@
         </div>
     </header>
 
-    <main class="container" style="margin-top: 120px; min-height: 70vh;">
+    <main class="container" style="margin-top: 100px; min-height: 70vh;">
         
         <div class="stats-header">
             <div class="dev-badge">
                 <i class="fa-solid fa-clipboard-list"></i> Fase de Investigación de Campo
             </div>
-            <h1 style="font-size: 3rem; margin-top: 10px;">Métricas y <span style="color: var(--primary-blue);">Recolección de Datos</span></h1>
+            <h1 style="font-size: 3rem; margin-top: 10px;">Métricas y <span style="color: var(--primary-blue);">Recolección</span></h1>
             <p style="max-width: 700px; margin: 20px auto 0; font-size: 1.1rem;">
-                Nuestro equipo se prepara para visitar diferentes colegios y ciudades. Aquí reflejaremos los datos reales y actualizados directamente de los estudiantes encuestados.
+                Nuestro equipo está visitando diferentes colegios y ciudades de Paraguay. Aquí se reflejarán los datos reales que Cybi recolecte directamente de los estudiantes encuestados.
             </p>
         </div>
 
         <div class="data-alert">
-            <i class="fa-solid fa-hourglass-half"></i> Los contadores se actualizarán a medida que se realicen las visitas a las instituciones educativas.
+            <i class="fa-solid fa-hourglass-half"></i> Los contadores y gráficos se actualizarán a medida que finalicen las jornadas en las instituciones educativas.
         </div>
 
         <div class="stats-grid">
@@ -124,8 +145,10 @@
         </div>
 
         <div class="glass-card chart-container">
-            <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.8rem;">Incidencia de Riesgos (Próximamente)</h2>
-            <canvas id="riesgosChart"></canvas>
+            <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.5rem;">Incidencia de Riesgos (Próximamente)</h2>
+            <div class="canvas-wrapper">
+                <canvas id="riesgosChart"></canvas>
+            </div>
             <p style="text-align: center; font-size: 0.85rem; color: var(--text-light); margin-top: 20px; font-style: italic;">
                 *El gráfico tomará forma una vez procesadas las primeras encuestas.
             </p>
@@ -140,8 +163,24 @@
     </footer>
 
     <script>
+        // Lógica del menú móvil
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = menuBtn.querySelector('i');
+            if(navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Gráfico inicializado en cero
         const ctx = document.getElementById('riesgosChart').getContext('2d');
-        
         const colorBlue = '#1877F2';
         const colorCyan = '#00E5FF';
         const colorGold = '#FFD54F';
@@ -150,28 +189,20 @@
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Ciberbullying', 'Sexting', 'Phishing', 'Hackeo de Cuentas', 'Sextorsión'],
+                labels: ['Ciberbullying', 'Sexting', 'Phishing', 'Hackeo', 'Sextorsión'],
                 datasets: [{
                     label: 'Casos Detectados',
-                    // Todos los datos empiezan en cero
                     data: [0, 0, 0, 0, 0],
-                    backgroundColor: [
-                        colorBlue,
-                        colorCyan,
-                        colorGold,
-                        colorDark,
-                        '#64748B'
-                    ],
+                    backgroundColor: [colorBlue, colorCyan, colorGold, colorDark, '#64748B'],
                     borderRadius: 8,
                     borderWidth: 0
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false, // Ahora es seguro usarlo por el canvas-wrapper
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
                         backgroundColor: 'rgba(11, 32, 70, 0.9)',
                         titleFont: { family: 'Nunito', size: 14 },
@@ -183,20 +214,16 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 100, // Lo dejamos en 100 como base, se ajustará solo cuando metan datos
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        ticks: {
-                            font: { family: 'Nunito' }
-                        }
+                        max: 100,
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                        ticks: { font: { family: 'Nunito' } }
                     },
                     x: {
-                        grid: {
-                            display: false
-                        },
+                        grid: { display: false },
                         ticks: {
-                            font: { family: 'Nunito', weight: 'bold' }
+                            font: { family: 'Nunito', weight: 'bold' },
+                            maxRotation: 45,
+                            minRotation: 45
                         }
                     }
                 }

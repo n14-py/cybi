@@ -16,8 +16,13 @@
                     <img src="img/cybi-logo.jpeg" alt="Logo Cybi" style="border-radius: 50%;">
                     <span class="logo-text">Cybi</span>
                 </a>
-                <ul class="nav-links">
-                    <li><a href="index.html">Inicio</a></li>
+                
+                <button class="menu-toggle" id="mobile-menu-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="index.html" style="color: var(--primary-blue);">Inicio</a></li>
                     <li><a href="chatbot.html">El Bot</a></li>
                     <li><a href="estadisticas.html">Estadísticas</a></li>
                     <li><a href="nosotros.html">Quiénes Somos</a></li>
@@ -30,14 +35,14 @@
         <section class="hero">
             <div class="hero-content">
                 <div class="dev-badge">
-                    <i class="fa-solid fa-code"></i> Proyecto en Desarrollo
+                    <i class="fa-solid fa-satellite-dish"></i> Recolectando Datos de Campo
                 </div>
                 
-                <h1>Tu guía amigable para la <span>Educación Cibernética</span></h1>
+                <h1>Tu guía interactiva para la <span>Educación Cibernética</span></h1>
                 
                 <p>
-                    Ante la falta de información y el aumento de riesgos digitales en Paraguay, nace <strong>Cybi</strong>. 
-                    Un chatbot diseñado para orientar a adolescentes sobre cómo prevenir y actuar frente al ciberbullying, sexting y phishing, en el marco de la ley 7593/2025.
+                    Ante el aumento de riesgos digitales en Paraguay, nace <strong>Cybi</strong>. 
+                    Más que un chatbot, es una herramienta activa que se despliega en colegios para levantar estadísticas reales y orientar a adolescentes de 12 a 15 años sobre cómo prevenir el ciberbullying, sexting y phishing (Ley 7593/2025).
                 </p>
 
                 <div class="hero-buttons">
@@ -51,17 +56,17 @@
             </div>
         </section>
 
-        <section style="margin-bottom: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        <section style="margin-bottom: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
             <div class="glass-card">
-                <i class="fa-solid fa-shield-halved" style="font-size: 2.5rem; color: var(--primary-blue); margin-bottom: 15px;"></i>
-                <h3>Prevención Activa</h3>
-                <p style="margin-top: 10px;">En el primer semestre de 2025 se registraron más de 551 millones de intentos de ciberataques. Cybi te enseña a proteger tus datos personales y estar alerta.</p>
+                <i class="fa-solid fa-map-location-dot" style="font-size: 2.5rem; color: var(--primary-blue); margin-bottom: 15px;"></i>
+                <h3>Trabajo de Campo</h3>
+                <p style="margin-top: 10px;">Visitamos ciudades e instituciones educativas para construir una base de datos propia. Cybi aprende directamente de las experiencias reales de la juventud paraguaya.</p>
             </div>
             
             <div class="glass-card">
                 <i class="fa-solid fa-user-graduate" style="font-size: 2.5rem; color: var(--primary-blue); margin-bottom: 15px;"></i>
                 <h3>Enfoque en Adolescentes</h3>
-                <p style="margin-top: 10px;">Orientado especialmente a jóvenes de 12 a 15 años, brindando consejos claros, pasos a seguir y métodos seguros ante situaciones de vulnerabilidad digital.</p>
+                <p style="margin-top: 10px;">Diseñado con un lenguaje empático para brindar consejos claros, pasos a seguir y contención ante situaciones de vulnerabilidad digital en menores.</p>
             </div>
         </section>
     </main>
@@ -72,5 +77,22 @@
         </div>
     </footer>
 
+    <script>
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            // Animación del ícono
+            const icon = menuBtn.querySelector('i');
+            if(navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        });
+    </script>
 </body>
 </html>
