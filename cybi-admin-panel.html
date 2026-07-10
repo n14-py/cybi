@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybi | Panel de Inteligencia y Moderación</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-blue: #1877F2;
+            --dark-blue: #0B2046;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --bg-light: #F4F7FC;
+            --shadow-soft: 0 8px 30px rgba(0,0,0,0.05);
+            --glass-border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Cabecera */
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 1000;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 10px;
+        }
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        /* Botones */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: var(--primary-blue); color: white; }
+        .btn-primary:hover { background: #155db2; transform: translateY(-2px); }
+        .btn-secondary { background: white; color: var(--dark-blue); border: 2px solid var(--primary-blue); }
+        .btn-secondary:hover { background: var(--bg-light); }
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-danger { background: #FF5252; color: white; }
+        .btn-small { padding: 6px 12px; font-size: 0.85rem; }
+
+        /* Estilos generales panel */
+        .stats-header { text-align: center; margin-bottom: 30px; }
+        .dev-badge {
+            display: inline-block; padding: 5px 15px; border-radius: 50px;
+            font-size: 0.85rem; font-weight: bold; margin-bottom: 10px;
+        }
+
+        /* Pantalla de Login */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(11, 32, 70, 0.98);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .login-box {
+            background: white; padding: 40px; border-radius: 24px;
+            text-align: center; max-width: 400px; width: 90%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* Filtros y Alertas */
+        .filter-bar {
+            background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 20px;
+            box-shadow: var(--shadow-soft); margin-bottom: 30px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;
+        }
+        .filter-group select {
+            padding: 10px 20px; border-radius: 50px; border: 2px solid rgba(24, 119, 242, 0.2);
+            font-family: inherit; font-size: 1rem; color: var(--text-dark); outline: none; background: white; cursor: pointer;
+        }
+        .data-alert {
+            background: rgba(24, 119, 242, 0.1); color: var(--primary-blue); padding: 15px;
+            border-radius: 15px; text-align: center; font-weight: bold; margin-bottom: 30px;
+        }
+
+        /* Tarjetas de Estadísticas */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-card {
+            text-align: center; padding: 25px 20px; background: white; border-radius: 24px;
+            box-shadow: var(--shadow-soft); transition: transform 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card i { font-size: 2rem; color: var(--primary-blue); margin-bottom: 10px; opacity: 0.8; }
+        .stat-number { font-size: 3rem; font-weight: 900; color: var(--dark-blue); line-height: 1; margin-bottom: 5px; }
+
+        /* Gráficos */
+        .charts-layout { display: grid; grid-template-columns: 1fr; gap: 30px; margin-bottom: 40px; }
+        @media (min-width: 992px) { .charts-layout { grid-template-columns: 2fr 1fr; } }
+        .chart-container { background: white; border-radius: 24px; padding: 25px; box-shadow: var(--shadow-soft); }
+        .canvas-wrapper { position: relative; height: 300px; width: 100%; }
+
+        /* Tabla de Moderación */
+        .moderation-section {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 60px;
+        }
+        .table-responsive { overflow-x: auto; }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            text-align: left;
+        }
+        .admin-table th, .admin-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .admin-table th { background: var(--bg-light); color: var(--dark-blue); font-weight: bold; }
+        .admin-table tr:hover { background: #f9fbff; }
+        
+        .badge {
+            padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
+        }
+        .badge-pendiente { background: #FFF9C4; color: #F57F17; }
+        .badge-aprobado { background: #C8E6C9; color: #2E7D32; }
+        .badge-rechazado { background: #FFCDD2; color: #C62828; }
+
+        /* Modal de Chat */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(0,0,0,0.6); z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 600px; border-radius: 24px;
+            display: flex; flex-direction: column; max-height: 85vh; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            padding: 20px; background: var(--dark-blue); color: white;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal-header h3 { margin: 0; }
+        .btn-close {
+            background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;
+        }
+        .modal-body {
+            padding: 20px; overflow-y: auto; flex: 1; background: #E5DDD5;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        .modal-footer {
+            padding: 20px; background: white; border-top: 1px solid #eee;
+            display: flex; justify-content: flex-end; gap: 10px;
+        }
+        
+        /* Burbujas de chat en el modal */
+        .msg-bubble {
+            max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 0.95rem; line-height: 1.4;
+        }
+        .msg-user {
+            background: #E3F2FD; color: #0D47A1; align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        .msg-bot {
+            background: white; color: var(--text-dark); align-self: flex-start;
+            border-bottom-left-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2 style="color: var(--dark-blue); margin-bottom: 10px;">Acceso Restringido</h2>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 25px;">Ingrese la clave de administrador para acceder a las métricas y moderación de Cybi.</p>
+            
+            <input type="password" id="admin-pass" placeholder="Contraseña..." style="width: 100%; padding: 12px 20px; border-radius: 50px; border: 2px solid rgba(24, 119, 242, 0.3); font-size: 1rem; margin-bottom: 15px; outline: none; box-sizing: border-box;">
+            <p id="login-error" style="color: #FF5252; font-size: 0.85rem; display: none; margin-bottom: 15px; font-weight: bold;"><i class="fa-solid fa-triangle-exclamation"></i> Contraseña incorrecta.</p>
+            
+            <button class="btn btn-primary" onclick="verificarAcceso()" style="width: 100%; justify-content: center; margin: 0;"><i class="fa-solid fa-unlock-keyhole"></i> Ingresar al Panel</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo-container">
+                    <span class="logo-text">Cybi <span style="color: var(--primary-blue);">Admin</span></span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#" style="color: #FF5252;" onclick="location.reload();"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 100px; min-height: 70vh;">
+        
+        <div class="stats-header">
+            <div class="dev-badge" style="background: rgba(11, 32, 70, 0.1); color: var(--dark-blue);">
+                <i class="fa-solid fa-shield-halved"></i> Dashboard Oficial Cybi
+            </div>
+            <h1 style="font-size: 2.5rem; margin-top: 10px;">Inteligencia y <span style="color: var(--primary-blue);">Moderación</span></h1>
+        </div>
+
+        <div class="data-alert" id="data-alert">Esperando autenticación...</div>
+
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label for="city-filter" style="font-weight: 800; color: var(--dark-blue); margin-right: 10px;"><i class="fa-solid fa-location-dot"></i> Filtrar Ciudad:</label>
+                <select id="city-filter"><option value="all">Todas</option></select>
+            </div>
+            <button class="btn btn-secondary" onclick="window.cargarEstadisticasYDatos()"><i class="fa-solid fa-rotate-right"></i> Refrescar Datos</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fa-solid fa-users"></i>
+                <div class="stat-number" id="count-alumnos">0</div>
+                <h3 style="font-size: 1rem; color: var(--text-light);">Encuestados Válidos</h3>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-triangle-exclamation" style="color: #FF5252;"></i>
+                <div class="stat-number" id="count-casos">0</div>
+                <h3 style="font-size: 1rem; color: var(--text-light);">Incidencias</h3>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-cake-candles" style="color: #FFD54F;"></i>
+                <div class="stat-number" id="count-edad">0</div>
+                <h3 style="font-size: 1rem; color: var(--text-light);">Edad Promedio</h3>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-user-shield" style="color: #F57F17;"></i>
+                <div class="stat-number" id="count-pendientes">0</div>
+                <h3 style="font-size: 1rem; color: var(--text-light);">Casos en Revisión</h3>
+            </div>
+        </div>
+
+        <div class="charts-layout">
+            <div class="chart-container">
+                <h2 style="margin-bottom: 20px; font-size: 1.3rem; color: var(--dark-blue);">Tipos de Riesgos Reportados</h2>
+                <div class="canvas-wrapper"><canvas id="riesgosChart"></canvas></div>
+            </div>
+            <div class="chart-container">
+                <h2 style="margin-bottom: 20px; font-size: 1.3rem; color: var(--dark-blue);">Zonas de Incidencia</h2>
+                <div class="canvas-wrapper"><canvas id="ciudadesChart"></canvas></div>
+            </div>
+        </div>
+
+        <div class="moderation-section">
+            <h2 style="margin-bottom: 10px; font-size: 1.5rem; color: var(--dark-blue);">Gestión de Datos y Conversaciones</h2>
+            <p style="color: var(--text-light); margin-bottom: 20px; font-size: 0.95rem;">Visualiza los chats de los alumnos, aprueba datos pendientes (sospechas de bromas) o descartalos si son falsos.</p>
+            
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Ciudad / Colegio</th>
+                            <th>Edad</th>
+                            <th>Riesgos</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-datos-body">
+                        <tr><td colspan="6" style="text-align: center;">Cargando registros...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="chat-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-comments"></i> Auditoría de Conversación</h3>
+                <button class="btn-close" onclick="cerrarChatModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="chat-messages-container">
+                </div>
+            <div class="modal-footer">
+                <span id="chat-modal-id-oculto" style="display:none;"></span>
+                <button class="btn btn-danger" onclick="cambiarEstadoChat('rechazado')"><i class="fa-solid fa-ban"></i> Descartar (Broma/Falso)</button>
+                <button class="btn btn-success" onclick="cambiarEstadoChat('aprobado')"><i class="fa-solid fa-check"></i> Aprobar Datos</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

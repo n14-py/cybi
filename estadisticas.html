@@ -3,79 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cybi | Recolección de Datos</title>
+    <title>Cybi | Estadísticas Públicas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         .stats-header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
 
+        /* --- Panel de Filtros --- */
+        .filter-bar {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            border: var(--glass-border);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-group label {
+            font-weight: 800;
+            color: var(--dark-blue);
+        }
+
+        .filter-group select {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 2px solid rgba(24, 119, 242, 0.2);
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text-dark);
+            outline: none;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group select:hover {
+            border-color: var(--primary-blue);
+        }
+
+        /* --- Tarjetas de Métricas --- */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
         .stat-card {
             text-align: center;
-            padding: 30px 20px;
+            padding: 25px 20px;
             position: relative;
             overflow: hidden;
-            border: 2px dashed rgba(24, 119, 242, 0.3);
+            border: 1px solid rgba(24, 119, 242, 0.1);
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.3s ease;
         }
 
+        .stat-card:hover { transform: translateY(-5px); }
+
         .stat-card i {
-            font-size: 2.5rem;
-            color: var(--text-light);
-            margin-bottom: 15px;
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            opacity: 0.8;
         }
 
         .stat-number {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 900;
-            color: var(--primary-blue);
+            color: var(--dark-blue);
             line-height: 1;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+        }
+
+        /* --- Layout de Gráficos --- */
+        .charts-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        @media (min-width: 992px) {
+            .charts-layout {
+                grid-template-columns: 2fr 1fr;
+            }
         }
 
         .chart-container {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto 60px auto;
-            padding: 30px 20px;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(0,0,0,0.05);
         }
         
-        /* Contenedor estricto para evitar el bug de Chart.js */
         .canvas-wrapper {
             position: relative;
-            height: 350px; /* Altura fija para evitar el scroll infinito */
+            height: 300px; 
             width: 100%;
         }
 
+        .charts-row-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
         .data-alert {
-            background: rgba(255, 213, 79, 0.2);
-            color: #B8860B;
+            background: rgba(24, 119, 242, 0.1);
+            color: var(--primary-blue);
             padding: 15px;
             border-radius: 15px;
             text-align: center;
             font-weight: bold;
             margin-bottom: 30px;
-            border: 1px solid rgba(255, 213, 79, 0.5);
             font-size: 0.95rem;
         }
 
-        /* Ajustes extra para móviles */
-        @media (max-width: 576px) {
-            .stats-header h1 { font-size: 2.2rem; }
-            .stat-number { font-size: 2.8rem; }
-            .chart-container { padding: 20px 10px; }
-            .canvas-wrapper { height: 300px; } /* Un poco más pequeño en celulares */
-        }
     </style>
 </head>
 <body>
@@ -105,68 +170,73 @@
     <main class="container" style="margin-top: 100px; min-height: 70vh;">
         
         <div class="stats-header">
-            <div class="dev-badge">
-                <i class="fa-solid fa-clipboard-list"></i> Fase de Investigación de Campo
+            <div class="dev-badge" style="background: rgba(11, 32, 70, 0.1); color: var(--dark-blue);">
+                <i class="fa-solid fa-chart-pie"></i> Datos Transparentes
             </div>
-            <h1 style="font-size: 3rem; margin-top: 10px;">Métricas y <span style="color: var(--primary-blue);">Recolección</span></h1>
-            <p style="max-width: 700px; margin: 20px auto 0; font-size: 1.1rem;">
-                Nuestro equipo está visitando diferentes colegios y ciudades de Paraguay. Aquí se reflejarán los datos reales que Cybi recolecte directamente de los estudiantes encuestados.
-            </p>
+            <h1 style="font-size: 2.5rem; margin-top: 10px;">Estadísticas en <span style="color: var(--primary-blue);">Tiempo Real</span></h1>
         </div>
 
-        <div class="data-alert">
-            <i class="fa-solid fa-hourglass-half"></i> Los contadores y gráficos se actualizarán a medida que finalicen las jornadas en las instituciones educativas.
+        <div class="data-alert" id="data-alert">
+            <i class="fa-solid fa-spinner fa-spin"></i> Conectando con el motor de base de datos...
+        </div>
+
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label for="city-filter"><i class="fa-solid fa-location-dot"></i> Filtrar por Ciudad:</label>
+                <select id="city-filter">
+                    <option value="all">Todas las ciudades (Nacional)</option>
+                </select>
+            </div>
+            <button class="btn btn-secondary" onclick="window.cargarEstadisticasYDatos()"><i class="fa-solid fa-rotate-right"></i> Actualizar</button>
         </div>
 
         <div class="stats-grid">
-            <div class="glass-card stat-card">
-                <i class="fa-solid fa-school"></i>
-                <div class="stat-number">0</div>
-                <h3 style="font-size: 1.1rem; color: var(--text-dark);">Colegios Visitados</h3>
+            <div class="stat-card">
+                <i class="fa-solid fa-users"></i>
+                <div class="stat-number" id="count-alumnos">0</div>
+                <h3 style="font-size: 1rem; color: var(--text-light);">Alumnos Encuestados</h3>
             </div>
 
-            <div class="glass-card stat-card">
-                <i class="fa-solid fa-map-location-dot"></i>
-                <div class="stat-number">0</div>
-                <h3 style="font-size: 1.1rem; color: var(--text-dark);">Ciudades Alcanzadas</h3>
+            <div class="stat-card">
+                <i class="fa-solid fa-triangle-exclamation" style="color: #FF5252;"></i>
+                <div class="stat-number" id="count-casos">0</div>
+                <h3 style="font-size: 1rem; color: var(--text-light);">Incidencias Reportadas</h3>
             </div>
 
-            <div class="glass-card stat-card">
-                <i class="fa-solid fa-users-viewfinder"></i>
-                <div class="stat-number">0</div>
-                <h3 style="font-size: 1.1rem; color: var(--text-dark);">Alumnos Encuestados</h3>
+            <div class="stat-card">
+                <i class="fa-solid fa-cake-candles" style="color: #FFD54F;"></i>
+                <div class="stat-number" id="count-edad">0</div>
+                <h3 style="font-size: 1rem; color: var(--text-light);">Edad Promedio</h3>
             </div>
 
-            <div class="glass-card stat-card">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <div class="stat-number">0</div>
-                <h3 style="font-size: 1.1rem; color: var(--text-dark);">Casos Reportados</h3>
+            <div class="stat-card">
+                <i class="fa-solid fa-user-shield" style="color: #F57F17;"></i>
+                <div class="stat-number" id="count-pendientes">0</div>
+                <h3 style="font-size: 1rem; color: var(--text-light);">Casos en Revisión</h3>
             </div>
         </div>
 
-        <div class="glass-card chart-container">
-            <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.5rem;">Incidencia de Riesgos (Próximamente)</h2>
-            <div class="canvas-wrapper">
-                <canvas id="riesgosChart"></canvas>
+        <div class="charts-layout">
+            <div class="chart-container">
+                <h2 style="margin-bottom: 20px; font-size: 1.3rem; color: var(--dark-blue);">Tipos de Riesgos Detectados</h2>
+                <div class="canvas-wrapper">
+                    <canvas id="riesgosChart"></canvas>
+                </div>
             </div>
-            <p style="text-align: center; font-size: 0.85rem; color: var(--text-light); margin-top: 20px; font-style: italic;">
-                *El gráfico tomará forma una vez procesadas las primeras encuestas.
-            </p>
+
+            <div class="chart-container">
+                <h2 style="margin-bottom: 20px; font-size: 1.3rem; color: var(--dark-blue);">Distribución por Ciudades</h2>
+                <div class="canvas-wrapper">
+                    <canvas id="ciudadesChart"></canvas>
+                </div>
+            </div>
         </div>
 
     </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 Proyecto Cybi. Desarrollado por estudiantes universitarios para Paraguay.</p>
-        </div>
-    </footer>
-
     <script>
-        // Lógica del menú móvil
         const menuBtn = document.getElementById('mobile-menu-btn');
         const navLinks = document.getElementById('nav-links');
-
         menuBtn.addEventListener('click', () => {
             navLinks.classList.toggle('active');
             const icon = menuBtn.querySelector('i');
@@ -178,56 +248,17 @@
                 icon.classList.add('fa-bars');
             }
         });
-
-        // Gráfico inicializado en cero
-        const ctx = document.getElementById('riesgosChart').getContext('2d');
-        const colorBlue = '#1877F2';
-        const colorCyan = '#00E5FF';
-        const colorGold = '#FFD54F';
-        const colorDark = '#0B2046';
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Ciberbullying', 'Sexting', 'Phishing', 'Hackeo', 'Sextorsión'],
-                datasets: [{
-                    label: 'Casos Detectados',
-                    data: [0, 0, 0, 0, 0],
-                    backgroundColor: [colorBlue, colorCyan, colorGold, colorDark, '#64748B'],
-                    borderRadius: 8,
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false, // Ahora es seguro usarlo por el canvas-wrapper
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(11, 32, 70, 0.9)',
-                        titleFont: { family: 'Nunito', size: 14 },
-                        bodyFont: { family: 'Nunito', size: 14 },
-                        padding: 15,
-                        cornerRadius: 10
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
-                        ticks: { font: { family: 'Nunito' } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: {
-                            font: { family: 'Nunito', weight: 'bold' },
-                            maxRotation: 45,
-                            minRotation: 45
-                        }
-                    }
+    </script>
+    
+    <script src="js/admin.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if(typeof window.cargarEstadisticasYDatos === 'function') {
+                    window.cargarEstadisticasYDatos();
                 }
-            }
+            }, 300); // Pequeño retraso para asegurar que admin.js se haya cargado
         });
     </script>
 </body>
