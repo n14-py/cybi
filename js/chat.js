@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // URL del Backend (Actualizar al desplegar en producción)
-    const API_URL = 'http://localhost:5000/api/chat';
+    const API_URL = 'https://cibybackend.onrender.com/api/chat';
 
     // 2. Referencias DOM
     const chatWindowDom = document.getElementById('chat-window');

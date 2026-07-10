@@ -4,7 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    const API_BASE_URL = 'http://localhost:5000/api/admin';
+    const API_BASE_URL = 'https://cibybackend.onrender.com/api/admin';
     const API_STATS_URL = `${API_BASE_URL}/stats`;
     const API_CHAT_URL = `${API_BASE_URL}/chat`; 
     const API_UPDATE_URL = `${API_BASE_URL}/stats`; 
