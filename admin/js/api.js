@@ -32,6 +32,35 @@
                 method: 'PUT',
                 body: JSON.stringify({ estado: estado, notasAdmin: notasAdmin || '' })
             });
+        },
+        // Síntesis opcional del PDF. POST /informe/resumen
+        // Cuerpo: { codigo, emitidoEn, zonaHoraria, filtros, indicadores, distribucion, expedientes }
+        // expedientes[].mensajes = [{ rol, fecha, texto }] (sin mensajes de sistema).
+        // Respuesta: { resumen: string, recomendaciones?: string[] }
+        // Si la ruta todavía no existe, el PDF se emite igual y arma la síntesis en el panel.
+        resumenInforme: async function (payload, signal) {
+            const respuesta = await fetch(cfg.API + '/informe/resumen', {
+                method: 'POST',
+                signal: signal,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + window.CybiAuth.getToken()
+                },
+                body: JSON.stringify(payload || {})
+            });
+            const crudo = await respuesta.text();
+            let body = {};
+            if (crudo) {
+                try { body = JSON.parse(crudo); }
+                catch (e) { body = { resumen: crudo }; }
+            }
+            if (!respuesta.ok) {
+                const error = new Error((body && body.error) || 'Sin síntesis');
+                error.status = respuesta.status;
+                throw error;
+            }
+            return body;
         }
     };
 })();
