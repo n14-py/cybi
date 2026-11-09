@@ -63,7 +63,7 @@
             status.textContent = 'Preparando informe...';
             crudos = await window.CybiApi.stats();
             pintarInforme(filtrados());
-            status.textContent = 'Informe listo para exportar. Documento confidencial.';
+            status.textContent = 'Informe listo. El PDF sale como documento completo: fecha de emisión, indicadores, todos los expedientes y las transcripciones.';
         } catch (err) {
             status.className = 'status bad';
             status.textContent = err.message;
@@ -71,26 +71,36 @@
     }
 
     async function exportarPdf() {
-        const nodo = document.getElementById('informe');
-        const canvas = await html2canvas(nodo, { scale: 2, backgroundColor: '#ffffff' });
-        const img = canvas.toDataURL('image/png');
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pageW = pdf.internal.pageSize.getWidth();
-        const pageH = pdf.internal.pageSize.getHeight();
-        const imgW = pageW;
-        const imgH = canvas.height * imgW / canvas.width;
-        let heightLeft = imgH;
-        let position = 0;
-        pdf.addImage(img, 'PNG', 0, position, imgW, imgH);
-        heightLeft -= pageH;
-        while (heightLeft > 0) {
-            position = heightLeft - imgH;
-            pdf.addPage();
-            pdf.addImage(img, 'PNG', 0, position, imgW, imgH);
-            heightLeft -= pageH;
+        const btn = document.getElementById('btn-pdf');
+        const status = document.getElementById('r-status');
+        if (!btn || btn.disabled) return;
+        if (!window.CybiInformePdf) {
+            status.className = 'status bad';
+            status.textContent = 'No se cargó el generador del documento.';
+            return;
         }
-        pdf.save('cybi-informe-confidencial.pdf');
+        btn.disabled = true;
+        try {
+            const resultado = await window.CybiInformePdf.exportar({
+                datos: filtrados(),
+                filtros: {
+                    desde: document.getElementById('r-desde').value,
+                    hasta: document.getElementById('r-hasta').value,
+                    estado: document.getElementById('r-estado').value
+                },
+                onProgress: function (mensaje) {
+                    status.className = 'status';
+                    status.textContent = mensaje;
+                }
+            });
+            status.className = 'status';
+            status.textContent = resultado.mensaje;
+        } catch (err) {
+            status.className = 'status bad';
+            status.textContent = err.message || 'No se pudo emitir el PDF.';
+        } finally {
+            btn.disabled = false;
+        }
     }
 
     window.recargarAdmin = cargar;
