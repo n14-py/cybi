@@ -14,7 +14,7 @@
             type: type || 'bar',
             data: { labels: labels, datasets: [{ data: values, backgroundColor: ['#2f7cf6', '#22d3ee', '#0b2046', '#f59e0b', '#10b981', '#ef4444'], borderColor: '#2f7cf6', fill: type === 'line', tension: 0.3, borderRadius: 6 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-        });
+        }));
     }
 
     function pintarInforme(datos) {
